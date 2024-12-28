@@ -618,7 +618,7 @@ static int optoe_nvmem_write(void *priv, unsigned int off,
 	return optoe_read_write(optoe, buf, off, count, OPTOE_WRITE_OP);
 }
 
-static int optoe_remove(struct i2c_client *client)
+static void optoe_remove(struct i2c_client *client)
 {
 	struct optoe_data *optoe;
 
@@ -634,7 +634,6 @@ static int optoe_remove(struct i2c_client *client)
 		i2c_unregister_device(optoe->optoe_dummy.client);
 #endif
 	kfree(optoe);
-	return 0;
 }
 
 #ifndef LATEST_KERNEL
@@ -757,7 +756,7 @@ static ssize_t dev_class_store(struct device *dev,
 		/* SFP family */
 		/* if it doesn't exist, create 0x51 i2c address */
 		if (!optoe->optoe_dummy.client) {
-#ifdef LATEST_KERNEL
+#ifdef LATEST_KERNEL68
 			optoe->optoe_dummy.client =
 				devm_i2c_new_dummy_device(dev,
 							  client->adapter,
@@ -844,7 +843,7 @@ static struct attribute_group optoe_attr_group = {
 	.attrs = optoe_attrs,
 };
 
-#ifdef LATEST_KERNEL
+#ifdef LATEST_KERNEL68
 static int optoe_probe(struct i2c_client *client)
 #else
 static int optoe_probe(struct i2c_client *client,
@@ -925,7 +924,7 @@ static int optoe_probe(struct i2c_client *client,
 
 	/* SFF-8472 spec requires that the second I2C address be 0x51 */
 	if (optoe->dev_class == TWO_ADDR) {
-#ifdef LATEST_KERNEL
+#ifdef LATEST_KERNEL68
 		optoe->optoe_dummy.client =
 			devm_i2c_new_dummy_device(dev, client->adapter, 0x51);
 #else
